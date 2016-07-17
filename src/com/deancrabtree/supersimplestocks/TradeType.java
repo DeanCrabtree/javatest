@@ -1,4 +1,4 @@
-package com.deancrabtree.javatest;
+package com.deancrabtree.supersimplestocks;
 
 public enum TradeType
 {

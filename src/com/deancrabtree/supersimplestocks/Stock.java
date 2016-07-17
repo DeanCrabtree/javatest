@@ -1,4 +1,4 @@
-package com.deancrabtree.javatest;
+package com.deancrabtree.supersimplestocks;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -60,6 +60,11 @@ public class Stock
         return thePrice;
     }
 
+    public LinkedList<Trade> getTradesLog()
+    {
+        return theTradesLog;
+    }
+
     //Setters
     public void setSymbol( String pSymbol )
     {
@@ -100,7 +105,7 @@ public class Stock
     {
         if( theLastDividend.compareTo( BigDecimal.ZERO ) != 0)
         {
-            return pTickerPrice.divide( theLastDividend, RoundingMode.HALF_UP);
+            return pTickerPrice.divide( theLastDividend, 3, RoundingMode.HALF_UP);
         }
         else
         {
@@ -141,7 +146,7 @@ public class Stock
             lSumQuantities += lTrade.getQuantity();
         }
 
-        thePrice = lSumPricesAndQuantities.divide( new BigDecimal( lSumQuantities ), RoundingMode.HALF_UP );
+        thePrice = lSumPricesAndQuantities.divide( new BigDecimal( lSumQuantities ), 3, RoundingMode.HALF_UP );
         return thePrice;
     }
 }

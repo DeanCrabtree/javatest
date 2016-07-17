@@ -1,18 +1,15 @@
-package com.deancrabtree.javatest;
+package com.deancrabtree.supersimplestocks;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
 public class SuperSimpleStocks
 {
-    private static HashMap<String, Stock> theStocks = new HashMap<String, Stock>();
+    public static HashMap<String, Stock> theStocks = new HashMap<String, Stock>();
 
     public static void main( String[] args ) throws InterruptedException
     {
@@ -58,22 +55,23 @@ public class SuperSimpleStocks
         System.out.println( "The GBCE All Share Index is: " + calculateGBCE() );
     }
 
-    private static double calculateGBCE( )
+    public static double calculateGBCE( )
     {
-        BigDecimal lStockPrices[] = new BigDecimal[5];
+        BigDecimal lStockPrices[] = new BigDecimal[theStocks.size()];
         Stock lStock;
         int i = 0;
         for( Map.Entry<String, Stock> lStockEntry : theStocks.entrySet() )
         {
             lStock = lStockEntry.getValue();
             lStockPrices[i] = lStock.getPrice();
+            i++;
         }
 
         BigDecimal lSum = lStockPrices[0];
 
         for( int j = 1; j < lStockPrices.length; j++ )
         {
-            lSum = lSum.multiply( lStockPrices[i] );
+            lSum = lSum.multiply( lStockPrices[j] );
         }
         return Math.pow( lSum.doubleValue(), 1.0 / lStockPrices.length);
     }

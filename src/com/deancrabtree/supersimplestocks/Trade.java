@@ -1,4 +1,4 @@
-package com.deancrabtree.javatest;
+package com.deancrabtree.supersimplestocks;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,22 +19,22 @@ public class Trade
     }
 
     //Getters
-    protected Date getTimestamp()
+    public Date getTimestamp()
     {
         return theTimestamp;
     }
 
-    protected int getQuantity()
+    public int getQuantity()
     {
         return theQuantity;
     }
 
-    protected TradeType getType()
+    public TradeType getType()
     {
         return theType;
     }
 
-    protected BigDecimal getPrice()
+    public BigDecimal getPrice()
     {
         return thePrice;
     }
