@@ -1,26 +1,26 @@
 package com.deancrabtree.javatest;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeUnit.*;
 
 public class Stock
 {
     private String theSymbol;
     private StockType theType;
-    private int theLastDividend;
-    private int theFixedDividend;
-    private int theParValue;
-    private int theTickerPrice;
+    private BigDecimal theLastDividend;
+    private double theFixedDividend;
+    private BigDecimal theParValue;
+    private BigDecimal thePrice;
     private LinkedList<Trade> theTradesLog = new LinkedList<Trade>();
 
     public Stock()
     {
     }
 
-    public Stock( String pSymbol, StockType pType, int pLastDividend, int pFixedDividend, int pParValue )
+    public Stock( String pSymbol, StockType pType, BigDecimal pLastDividend, double pFixedDividend, BigDecimal pParValue )
     {
         theSymbol = pSymbol;
         theType = pType;
@@ -40,19 +40,24 @@ public class Stock
         return theType;
     }
 
-    public int getLastDividend()
+    public BigDecimal getLastDividend()
     {
         return theLastDividend;
     }
 
-    public int getFixedDividend()
+    public double getFixedDividend()
     {
         return theFixedDividend;
     }
 
-    public int getParValue()
+    public BigDecimal getParValue()
     {
         return theParValue;
+    }
+
+    public BigDecimal getPrice()
+    {
+        return thePrice;
     }
 
     //Setters
@@ -64,51 +69,58 @@ public class Stock
     {
         theType = pType;
     }
-    public void setLastDividend( int pLastDividend )
+    public void setLastDividend( BigDecimal pLastDividend )
     {
         theLastDividend = pLastDividend;
     }
-    public void setFixedDividend( int pFixedDividend )
+    public void setFixedDividend( double pFixedDividend )
     {
         theFixedDividend = pFixedDividend;
     }
-    public void setParValue( int pParValue )
+    public void setParValue( BigDecimal pParValue )
     {
         theParValue = pParValue;
     }
 
-    public float calculateDividendYield(float pTickerPrice )
+    public BigDecimal calculateDividendYield( BigDecimal pTickerPrice )
     {
         if( theType == StockType.COMMON )
         {
-            return theLastDividend/pTickerPrice;
+            BigDecimal lDividendYield = theLastDividend.divide( pTickerPrice, 3, RoundingMode.HALF_UP);
+            return lDividendYield;
         }
         else if( theType == StockType.PREFERRED )
         {
-            return ( theFixedDividend*theParValue ) / pTickerPrice;
+            return ( theParValue.multiply( new BigDecimal( theFixedDividend ))).divide( pTickerPrice, 3, RoundingMode.HALF_UP );
         }
-
-        return 0;
+        return new BigDecimal( 0 );
     }
 
-    public float calculatePERatio( float pTickerPrice )
+    public BigDecimal calculatePERatio( BigDecimal pTickerPrice )
     {
-        return pTickerPrice/theLastDividend;
+        if( theLastDividend.compareTo( BigDecimal.ZERO ) != 0)
+        {
+            return pTickerPrice.divide( theLastDividend, RoundingMode.HALF_UP);
+        }
+        else
+        {
+            return new BigDecimal( 0 );
+        }
     }
 
-    public void buy( int pQuantity, float pPrice )
+    public void buy( int pQuantity, BigDecimal pPrice )
     {
         Trade lTrade = new Trade( new Date(), pQuantity, TradeType.BUY, pPrice );
         theTradesLog.add( lTrade );
     }
 
-    public void sell( int pQuantity, float pPrice )
+    public void sell( int pQuantity, BigDecimal pPrice )
     {
         Trade lTrade = new Trade( new Date(), pQuantity, TradeType.SELL, pPrice );
         theTradesLog.add( lTrade );
     }
 
-    public float calculateStockPrice()
+    public BigDecimal calculateStockPrice()
     {
         //Get relevant trade listings
         LinkedList<Trade> lRelevantTrades = new LinkedList<>();
@@ -121,14 +133,15 @@ public class Stock
             }
         }
 
-        float lSumPricesAndQuantities = 0f;
+        BigDecimal lSumPricesAndQuantities = new BigDecimal( 0 );
         int lSumQuantities = 0;
         for( Trade lTrade : lRelevantTrades )
         {
-            lSumPricesAndQuantities += lTrade.getPrice() * lTrade.getQuantity();
+            lSumPricesAndQuantities = lSumPricesAndQuantities.add( lTrade.getPrice().multiply( new BigDecimal( lTrade.getQuantity() )) );
             lSumQuantities += lTrade.getQuantity();
         }
 
-        return lSumPricesAndQuantities / lSumQuantities;
+        thePrice = lSumPricesAndQuantities.divide( new BigDecimal( lSumQuantities ), RoundingMode.HALF_UP );
+        return thePrice;
     }
 }

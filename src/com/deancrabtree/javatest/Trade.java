@@ -1,5 +1,6 @@
 package com.deancrabtree.javatest;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Trade
@@ -7,9 +8,9 @@ public class Trade
     private Date theTimestamp;
     private int theQuantity;
     private TradeType theType;
-    private float thePrice;
+    private BigDecimal thePrice;
 
-    protected Trade( Date pTimeStamp, int pQuantity, TradeType pType, float pPrice )
+    protected Trade( Date pTimeStamp, int pQuantity, TradeType pType, BigDecimal pPrice )
     {
         theTimestamp = pTimeStamp;
         theQuantity = pQuantity;
@@ -33,7 +34,7 @@ public class Trade
         return theType;
     }
 
-    protected float getPrice()
+    protected BigDecimal getPrice()
     {
         return thePrice;
     }
